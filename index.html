@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/multi-style-layer.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="data/Konkan_08032023_1.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        map.createPane('pane_GoogleRoad_0');
+        map.getPane('pane_GoogleRoad_0').style.zIndex = 400;
+        var layer_GoogleRoad_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleRoad_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.google.at/permissions/geoguidelines/attr-guide.html">Map data ©2015 Google</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_GoogleRoad_0;
+        map.addLayer(layer_GoogleRoad_0);
+        function pop_Konkan_08032023_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Zone</th>\
+                        <td>' + (feature.properties['Zone'] !== null ? autolinker.link(feature.properties['Zone'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Circle</th>\
+                        <td>' + (feature.properties['Circle'] !== null ? autolinker.link(feature.properties['Circle'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Division</th>\
+                        <td>' + (feature.properties['Division'] !== null ? autolinker.link(feature.properties['Division'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Sub_Div</th>\
+                        <td>' + (feature.properties['Sub_Div'] !== null ? autolinker.link(feature.properties['Sub_Div'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Sect_Name</th>\
+                        <td>' + (feature.properties['Sect_Name'] !== null ? autolinker.link(feature.properties['Sect_Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Feed_Name</th>\
+                        <td>' + (feature.properties['Feed_Name'] !== null ? autolinker.link(feature.properties['Feed_Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Address</th>\
+                        <td>' + (feature.properties['Address'] !== null ? autolinker.link(feature.properties['Address'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Contact_No</th>\
+                        <td>' + (feature.properties['Contact_No'] !== null ? autolinker.link(feature.properties['Contact_No'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Alter_No</th>\
+                        <td>' + (feature.properties['Alter_No'] !== null ? autolinker.link(feature.properties['Alter_No'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Latitude</th>\
+                        <td>' + (feature.properties['Latitude'] !== null ? autolinker.link(feature.properties['Latitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Longitude</th>\
+                        <td>' + (feature.properties['Longitude'] !== null ? autolinker.link(feature.properties['Longitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">DTR_Name</th>\
+                        <td>' + (feature.properties['DTR_Name'] !== null ? autolinker.link(feature.properties['DTR_Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Cons_Name</th>\
+                        <td>' + (feature.properties['Cons_Name'] !== null ? autolinker.link(feature.properties['Cons_Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Cons_No</th>\
+                        <td>' + (feature.properties['Cons_No'] !== null ? autolinker.link(feature.properties['Cons_No'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Meter_No</th>\
+                        <td>' + (feature.properties['Meter_No'] !== null ? autolinker.link(feature.properties['Meter_No'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">RelPath</th>\
+                        <td><img width="100%" height="100%" src="' + feature.properties['RelPath']  + '"></td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Konkan_08032023_1_0(feature) {
+            switch(String(feature.properties['Division'])) {
+                case 'BHUSAWAL':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 5.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(208,58,160,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'CHANDWAD':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 5.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(63,158,202,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DHARANGAON':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 5.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(240,166,87,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DHULE RURAL':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 5.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(148,204,26,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DHULE URBAN':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 5.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(224,73,238,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DONDAICHA':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 5.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,23,77,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'JALGAON URBAN':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 5.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(53,218,138,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'KARJAT (R)':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 5.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(35,13,200,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'MUKTAINAGAR':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 5.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(23,208,193,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'NANDURBAR (O)':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 5.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(46,98,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'NASIK RURAL':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 5.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(36,213,57,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'PACHORA':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 5.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(127,214,92,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'SAVADA':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 5.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(210,199,84,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'SHAHADA':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 5.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(211,43,21,1.0)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 5.0,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(143,48,233,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        function style_Konkan_08032023_1_1(feature) {
+            switch(String(feature.properties['Division'])) {
+                case 'BHUSAWAL':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 1.0937499999999998,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(208,58,160,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'CHANDWAD':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 1.0937499999999998,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(63,158,202,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DHARANGAON':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 1.0937499999999998,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(240,166,87,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DHULE RURAL':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 1.0937499999999998,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(148,204,26,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DHULE URBAN':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 1.0937499999999998,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(224,73,238,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DONDAICHA':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 1.0937499999999998,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,23,77,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'JALGAON URBAN':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 1.0937499999999998,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(53,218,138,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'KARJAT (R)':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 1.0937499999999998,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(35,13,200,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'MUKTAINAGAR':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 1.0937499999999998,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(23,208,193,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'NANDURBAR (O)':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 1.0937499999999998,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(46,98,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'NASIK RURAL':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 1.0937499999999998,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(36,213,57,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'PACHORA':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 1.0937499999999998,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(127,214,92,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'SAVADA':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 1.0937499999999998,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(210,199,84,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'SHAHADA':
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 1.0937499999999998,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(211,43,21,1.0)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_Konkan_08032023_1',
+                radius: 1.0937499999999998,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(143,48,233,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Konkan_08032023_1');
+        map.getPane('pane_Konkan_08032023_1').style.zIndex = 401;
+        map.getPane('pane_Konkan_08032023_1').style['mix-blend-mode'] = 'normal';
+        var layer_Konkan_08032023_1 = new L.geoJson.multiStyle(json_Konkan_08032023_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Konkan_08032023_1',
+            layerName: 'layer_Konkan_08032023_1',
+            pane: 'pane_Konkan_08032023_1',
+            onEachFeature: pop_Konkan_08032023_1,
+            pointToLayers: [function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Konkan_08032023_1_0(feature));
+            },function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Konkan_08032023_1_1(feature));
+            },
+        ]});
+        bounds_group.addLayer(layer_Konkan_08032023_1);
+        map.addLayer(layer_Konkan_08032023_1);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'Konkan_08032023<br /><table><tr><td style="text-align: center;"><img src="legend/Konkan_08032023_1_BHUSAWAL0.png" /></td><td>BHUSAWAL</td></tr><tr><td style="text-align: center;"><img src="legend/Konkan_08032023_1_CHANDWAD1.png" /></td><td>CHANDWAD</td></tr><tr><td style="text-align: center;"><img src="legend/Konkan_08032023_1_DHARANGAON2.png" /></td><td>DHARANGAON</td></tr><tr><td style="text-align: center;"><img src="legend/Konkan_08032023_1_DHULERURAL3.png" /></td><td>DHULE RURAL</td></tr><tr><td style="text-align: center;"><img src="legend/Konkan_08032023_1_DHULEURBAN4.png" /></td><td>DHULE URBAN</td></tr><tr><td style="text-align: center;"><img src="legend/Konkan_08032023_1_DONDAICHA5.png" /></td><td>DONDAICHA</td></tr><tr><td style="text-align: center;"><img src="legend/Konkan_08032023_1_JALGAONURBAN6.png" /></td><td>JALGAON URBAN</td></tr><tr><td style="text-align: center;"><img src="legend/Konkan_08032023_1_KARJATR7.png" /></td><td>KARJAT (R)</td></tr><tr><td style="text-align: center;"><img src="legend/Konkan_08032023_1_MUKTAINAGAR8.png" /></td><td>MUKTAINAGAR</td></tr><tr><td style="text-align: center;"><img src="legend/Konkan_08032023_1_NANDURBARO9.png" /></td><td>NANDURBAR (O)</td></tr><tr><td style="text-align: center;"><img src="legend/Konkan_08032023_1_NASIKRURAL10.png" /></td><td>NASIK RURAL</td></tr><tr><td style="text-align: center;"><img src="legend/Konkan_08032023_1_PACHORA11.png" /></td><td>PACHORA</td></tr><tr><td style="text-align: center;"><img src="legend/Konkan_08032023_1_SAVADA12.png" /></td><td>SAVADA</td></tr><tr><td style="text-align: center;"><img src="legend/Konkan_08032023_1_SHAHADA13.png" /></td><td>SHAHADA</td></tr><tr><td style="text-align: center;"><img src="legend/Konkan_08032023_1_14.png" /></td><td></td></tr></table>': layer_Konkan_08032023_1,"Google Road": layer_GoogleRoad_0,}).addTo(map);
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: layer_Konkan_08032023_1,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'Meter_No'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        </script>
+    </body>
+</html>
